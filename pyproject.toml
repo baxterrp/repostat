@@ -5,6 +5,7 @@ description = "Github repository analyzer"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "httpx>=0.28.1",
     "rich>=15.0.0",
     "typer>=0.26.7",
 ]
