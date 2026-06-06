@@ -1,0 +1,16 @@
+[project]
+name = "repostat"
+version = "0.1.0"
+description = "Github repository analyzer"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "rich>=15.0.0",
+    "typer>=0.26.7",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.15.16",
+]
