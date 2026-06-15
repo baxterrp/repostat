@@ -1,20 +1,18 @@
 from typing import Any
-from models import Repository
+from repostat.models import Repository
 
 import httpx
 
 
-def get_repo(owner: str, repo_name: str) -> dict[str, Any]:
+def fetch(owner: str, repo_name: str) -> dict[str, Any]:
     url = f"https://api.github.com/repos/{owner}/{repo_name}"
     response = httpx.get(url)
     response.raise_for_status()
     return response.json()
 
 
-def main():
-    owner = "baxterrp"
-    repo_name = "repostat"
-    repo_info = get_repo(owner, repo_name)
+def print_repository_stats(owner: str, repo_name: str) -> None:
+    repo_info = fetch(owner, repo_name)
     rep = Repository(
         full_name=repo_info["full_name"],
         description=repo_info["description"],
@@ -24,7 +22,3 @@ def main():
     )
 
     print(rep.summarize())
-
-
-if __name__ == "__main__":
-    main()
