@@ -21,7 +21,5 @@ def print_repository_stats(owner: str, repo_name: str, json: bool) -> None:
         topics=repo_info.get("topics", []),
     )
 
-    if json:
-        print(repo_info)
-    else:
-        print(rep.summarize())
+    response = repo_info if json else rep.summarize()
+    print(response)
