@@ -2,6 +2,7 @@ from typing import Any
 from repostat.exceptions import RepositoryNotFoundError
 from repostat.models import Repository
 
+import os
 import json as json_lib
 import httpx
 import typer
@@ -10,12 +11,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def fetch(owner: str, repo_name: str) -> dict[str, Any]:
-    url = f"https://api.github.com/repos/{owner}/{repo_name}"
+def fetch(client: httpx.Client, owner: str, repo_name: str) -> dict[str, Any]:
     logger.info("Fetching repository info for %s/%s", owner, repo_name)
+    url = f"https://api.github.com/repos/{owner}/{repo_name}"
+
     try:
-        with httpx.Client() as client:
-            return client.get(url).raise_for_status().json()
+        return client.get(url).raise_for_status().json()
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 404:
             raise RepositoryNotFoundError(owner, repo_name) from e
@@ -23,8 +24,13 @@ def fetch(owner: str, repo_name: str) -> dict[str, Any]:
 
 
 def print_repository_stats(owner: str, repo_name: str, json: bool) -> None:
+    token = os.getenv("GITHUB_TOKEN")
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+
     try:
-        repo_info = fetch(owner, repo_name)
+        with httpx.Client(headers=headers) as client:
+            repo_info = fetch(client, owner, repo_name)
+
         rep = Repository(
             full_name=repo_info["full_name"],
             description=repo_info["description"],
