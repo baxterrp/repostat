@@ -8,6 +8,7 @@ dependencies = [
     "httpx>=0.28.1",
     "monkeypatch>=0.1rc3",
     "python-dotenv>=1.2.2",
+    "respx>=0.23.1",
     "rich>=15.0.0",
     "typer>=0.26.7",
 ]
