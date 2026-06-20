@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def retry(max_attempts: int = 3, exclusions: tuple[type[Exception]] = (Exception,)):
+def retry(max_attempts: int = 3, exclusions: tuple[type[Exception], ...] = ()):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -14,9 +14,9 @@ def retry(max_attempts: int = 3, exclusions: tuple[type[Exception]] = (Exception
                 except Exception as e:
                     if isinstance(e, exclusions):
                         raise
-                    logger.warning(f"Attempt {attempt + 1} failed: {e}")
+                    logger.warning("Attempt %s failed: %s", attempt + 1, e)
                     if attempt == max_attempts - 1:
-                        logger.error(f"All attempts failed for {func.__name__}")
+                        logger.error("All attempts failed for %s", func.__name__)
                         raise
 
         return wrapper

@@ -152,11 +152,11 @@ def test_print_repo_stats_logs_error_on_failure(caplog, error_code, message):
 
 
 def test_print_repo_stats_logs_error_on_key_error(caplog):
-    with respx.mock:
-        respx.get(expected_github_url).mock(
-            return_value=httpx.Response(200, json={"full_name": "owner/repo"})
-        )
-        with caplog.at_level(logging.ERROR):
+    with caplog.at_level(logging.ERROR):
+        with respx.mock:
+            respx.get(expected_github_url).mock(
+                return_value=httpx.Response(200, json={"full_name": "owner/repo"})
+            )
             with pytest.raises(typer.Exit):
                 github.print_repository_stats("owner", "repo", False)
     assert "Missing key in repository info for owner/repo" in caplog.text
